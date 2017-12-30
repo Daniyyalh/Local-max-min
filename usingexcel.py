@@ -35,6 +35,7 @@ def local_min(l):
     temp = []
     repeat = False
     temp = []
+    # this is change
 
     print(l[0])
     
