@@ -3,43 +3,42 @@
 import xlrd
 
 
-
 def extract():
-    file_location = "C:/Users/Tariq/Downloads/CH2Data.xlsx"
+    """
+    Obtains all the information needed to find the local max and mins
+    """
+    file_location = "C:/Users/Tariq/Downloads/CH2Data.xlsx" #CHANGE: Location should point to the place where the file is kept
 
-    column_num = 3
-    #file_location = "C:/Users/Tariq/Documents/impfile/EXCELL STUFF.xlsx"
+    column_num = 3 #CHANGE: This is the column number of the values that would go in the x axis of a graph if you were to plot it - 1 since we
+                   #start with 0 when counting in CS
+
     workbook = xlrd.open_workbook(file_location)
 
-    # I guess sheets are named starting from 0
+    # Sheet indexes start from 0
     sheet = workbook.sheet_by_index(0)
-   #sheet = workbook.sheet_by_index("name")    # Uncomment and give the sheets name to use this
+   #sheet = workbook.sheet_by_index("name")    # Uncomment this and comment the line above it to find the sheet by it's name if it has a name
 
     l = []
-    # The first row is considered row 0 so this could get confusing
-    for i in range(0, 400):
-        a = sheet.cell_value(i, column_num)   # Gets the value in the cell. (row number, column number)
-        if a == "":
+    # The first row is considered row 0 instead of row 1, just like before with the columns
+    for row in range(0, 400):
+        inside_cell = sheet.cell_value(row, column_num)   # Gets the value in the cell given by (row number, column number)
+        if inside_cell == "":
             break
         else:
             
             #print("row " + str(i+1), sheet.cell_value(i,7))
-            l.append((i+1, sheet.cell_value(i,column_num)))
+            l.append((row+1, sheet.cell_value(row,column_num)))
 
     return l
 
-#(row, column value_left (column 7 in excel), value_right (column 8 in excel)   
 
 def local_min(l):
     new_l = []
     temp = []
     repeat = False
     temp = []
-    # this is change
 
-    print(l[0])
-    
-    # Makes assunption beginning few is not repeated
+
     for i in range(1, len(l)-1):
         if l[i][1] < l[i+1][1] and l[i][1] < l[i-1][1]:
             new_l.append(l[i])
@@ -56,7 +55,7 @@ def local_min(l):
                 # If repeated, add element to the repeated list
         
         elif l[i][1] != l[i+1][1] and repeat: #Checks when repeat is done
-            if point > temp[0][1] and l[i+1][1] > temp[0][1]: #Putting first cond >= to check if list begins with repeats
+            if point > temp[0][1] and l[i+1][1] > temp[0][1]:
                 new_l.extend(temp)
                 new_l.append(l[i])
                 repeat = False
@@ -82,7 +81,6 @@ def local_max(l):
     repeat = False
     temp = []
 
-    # Makes assunption beginning few is not repeated
     for i in range(0, 400):  #len(l)-1
         if l[i][2] > l[i+1][2] and l[i][2] > l[i-1][2]:
             new_l.append(l[i])
@@ -99,7 +97,7 @@ def local_max(l):
                 # If repeated, add element to the repeated list
         
         elif l[i][2] != l[i+1][2] and repeat: #Checks when repeat is done
-            if point < temp[0][2] and l[i+1][2] < temp[0][2]: #Putting first cond >= to check if list begins with repeats
+            if point < temp[0][2] and l[i+1][2] < temp[0][2]: 
                 new_l.extend(temp)
                 new_l.append(l[i])
                 repeat = False
@@ -110,21 +108,14 @@ def local_max(l):
                 temp = []
                 
 
-    # If it ends in repeats, add them to the list
-##    if len(temp) > 0:
-##        new_l.extend(temp)
-
         
     return new_l
 
-## NOTE: Hasn't been tested for cases where all numbers are the same
 
-
-l = extract()
-#print(l)
-min_points = local_min(l)
-#max_points = local_max(l)
-
+data = extract()
+min_points = local_min(data)
+#max_points = local_max(data)          # Comment out either max_points or min_points, whichever one you don't want right now. After this, comment out
+                                       # the corresponding print statement
 print(min_points)
 #print(max_points)
 
